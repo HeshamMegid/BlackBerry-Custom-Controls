@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+RIM-COD-Module-Name: CustomButton
+RIM-COD-Module-Dependencies: net_rim_cldc
+MIDlet-Jar-Size: 39766
+MIDlet-1: ,,
+RIM-COD-Creation-Time: 1331713441
+MIDlet-Jar-URL: CustomButton.jar
+RIM-COD-URL: CustomButton.cod
+RIM-COD-SHA1: 0b 41 90 54 62 ab 42 ea 30 6d 69 90 1f f3 ac 2a b8 5b b1 df
+RIM-COD-Size: 19252
+MicroEdition-Configuration: CLDC-1.1
+MIDlet-Version: 1.0.0
+MIDlet-Name: CustomButton
+MIDlet-Vendor: BlackBerry Developer
+MicroEdition-Profile: MIDP-2.0
+RIM-MIDlet-Flags-1: 0
