@@ -8,7 +8,10 @@ import net.rim.device.api.ui.Font;
 import net.rim.device.api.ui.Graphics;
 import net.rim.device.api.ui.Ui;
 
-public class CustomButtonField extends Field {
+import com.heshammegid.connection.HttpRequestDispatcher;
+import com.heshammegid.connection.HttpRequestDispatcher.HttpRequestDelegate;
+
+public class CustomButtonField extends Field implements HttpRequestDelegate {
     
 	// Set default size for button, used if no background image is set or the size is not explicitly set
 	private int 		buttonWidth = 200; 
@@ -22,6 +25,8 @@ public class CustomButtonField extends Field {
     
     private Bitmap 		backgroundImage;
     private Bitmap		focusBackgroundImage;
+    private String		backgroundImageUrl;
+    private String		focusBackgroundImageUrl;
     
     private int			backgroundColor = -1;
     private int			focusBackgroundColor = -1;
@@ -53,6 +58,21 @@ public class CustomButtonField extends Field {
     }
     
     /**
+     * Creates a ButtonField that takes 2 URLs for background/focus images and automatically download them.
+     */
+    public CustomButtonField(String text, String backgroundImageUrl, String focusBackgroundImageUrl, long style) {
+    	this(text, style);
+    	this.backgroundImageUrl = backgroundImageUrl;
+    	this.focusBackgroundImageUrl = focusBackgroundImageUrl;
+    	
+    	if (backgroundImageUrl != null)
+			new HttpRequestDispatcher(this, backgroundImageUrl).start(); // download background image
+    	
+    	if (focusBackgroundImageUrl != null)
+    		new HttpRequestDispatcher(this, focusBackgroundImageUrl).start(); // download focus image
+    }
+    
+    /**
      * @param text
      * @param backgroundColor
      * @param focusBackgroundColor set to -1 to get default focus style
@@ -79,9 +99,9 @@ public class CustomButtonField extends Field {
 		if (isFocus() && focusBackgroundColor != -1) {
 			graphics.setColor(focusBackgroundColor);
 			
-			if (roundedEdges)
+			if (roundedEdges) {
 				graphics.fillRoundRect(0, 0, buttonWidth, buttonHeight, ARC_WIDTH, ARC_HEIGHT);
-			else
+			} else
 				graphics.fillRect(0, 0, buttonWidth, buttonHeight);
 			
 		} else if (!isFocus() && backgroundColor != -1) {
@@ -134,7 +154,7 @@ public class CustomButtonField extends Field {
 	
 	protected void drawFocus(Graphics graphics, boolean on) {
 		// Only draw the default focus style if there isn't a focus background color or image set
-		
+		  
 		if (focusBackgroundImage == null && focusBackgroundColor == -1)
 			super.drawFocus(graphics, on);
 	}
@@ -222,5 +242,24 @@ public class CustomButtonField extends Field {
 
 	public void setfocusBackgroundColor(int focusBackgroundColor) {
 		this.focusBackgroundColor = focusBackgroundColor;
+	}
+	
+   /*
+    * HttpRequestDelegate
+    */
+
+	public void httpRequestFailed(String message) {
+		// Fail gracefully if the image fails to download
+	}
+
+	public void httpRequestSucceeded(byte[] result, String url) {
+		Bitmap downloadedBackgroundImage = Bitmap.createBitmapFromBytes(result, 0, result.length, 1);
+		
+		if (url.equals(backgroundImageUrl))
+			setBackgroundImage(downloadedBackgroundImage);
+		else if (url.equals(focusBackgroundImageUrl))
+			setfocusBackgroundImage(downloadedBackgroundImage);
+		
+		invalidate();
 	}
 }

@@ -32,5 +32,15 @@ public class ScreenMain extends MainScreen {
 		customButton2.setFont(Font.getDefault().derive(Font.BOLD, 6, Ui.UNITS_pt));
 		customButton2.setPadding(edges);
 		add(customButton2);
+
+		
+		String backgroundImageUrl = "http://hesh.am/playground/button_background.png";
+		String focusBackgroundImageUrl = "http://hesh.am/playground/button_background_focus.png";
+		
+		CustomButtonField customButton3 = new CustomButtonField("Button 3", backgroundImageUrl, focusBackgroundImageUrl, Field.FIELD_HCENTER);
+		Bitmap defaultBackground = Bitmap.getBitmapResource("default_background_image.png");
+		customButton3.setBackgroundImage(defaultBackground); // Place a default image till the background image is downloaded
+		customButton3.setPadding(edges);
+		add(customButton3);
 	}
 }
